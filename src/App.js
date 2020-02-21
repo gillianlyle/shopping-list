@@ -14,6 +14,10 @@ function App() {
           name: action.name
         }
       ];
+      case 'remove':
+      //keep everything except the one we want to remove
+      return state.filter((_, index) => index != action.index);
+      
       default:
         return state;
     }
@@ -35,8 +39,9 @@ function App() {
       </form>
       <ul>
         {items.map((item, index) => (
-          <li key={item.id}>
+          <li key={index}>
             {item.name}
+            <button onClick={()=> dispatch({type: 'remove', index})} > x</button>
           </li>
         ))}
       </ul>
