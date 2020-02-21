@@ -1,25 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useReducer, useRef} from 'react';
 
 function App() {
+
+  const inputRef = useRef(); //reference to a form input, so we can extract its value
+  const [items, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'add':
+      //returns new array that includes all the old elements, plus the new one at the end
+      return [
+        ...state,
+        {
+          id: state.length,
+          name: action.name
+        }
+      ];
+      default:
+        return state;
+    }
+  }, []);
+
+  function handleSubmit(e){
+    e.preventDefault(); //prevent full load page
+    dispatch({
+        type: 'add',
+        name: inputRef.current.value
+    });
+    inputRef.current.value= ''; //clear input after item added
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <form onSubmit={handleSubmit}>
+        <input ref={inputRef} />
+      </form>
+      <ul>
+        {items.map((item, index) => (
+          <li key={item.id}>
+            {item.name}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
